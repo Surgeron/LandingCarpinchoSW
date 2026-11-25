@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexoZafra · Priorización de Cosecha | CarpinchoSW</title>
+  <meta name="description" content="Sistema de priorización de cosecha, alertas tempranas de lluvia y control en vivo del patio de caña para el Ingenio La Esperanza, Jujuy. Presentado por CarpinchoSW.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3.3 & Bootstrap Icons 1.11.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <noscript>
+    <style>
+      #intro-splash { display: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+</head>
+<body class="intro-active">
+
+  <!-- =========================================================
+       INTRO SPLASH: "CarpinchoSW presenta: NexoZafra"
+       ========================================================= -->
+  <div id="intro-splash" class="intro-splash" role="dialog" aria-modal="true" aria-label="Presentación CarpinchoSW y NexoZafra">
+    <div class="intro-glow" aria-hidden="true"></div>
+    <button id="btn-skip-intro" type="button" class="btn intro-skip-btn">
+      Saltar <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+    </button>
+
+    <div class="intro-stage text-center px-3">
+      <p class="intro-kicker mb-3">CarpinchoSW presenta</p>
+      <div class="intro-divider mx-auto mb-3" aria-hidden="true"></div>
+      <h2 class="intro-wordmark mb-2">NexoZafra</h2>
+      <p class="intro-subtitle mb-0">Priorización inteligente de cosecha · Ingenio La Esperanza</p>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       NAVBAR FIJA
+       ========================================================= -->
+  <header>
+    <nav id="main-nav" class="navbar navbar-expand-lg fixed-top navbar-dark nz-navbar" aria-label="Navegación principal">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="#inicio">
+          <svg class="nz-brand-mark" width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="1" y="1" width="34" height="34" rx="9" fill="#360d19" stroke="#e6c7b5" stroke-opacity="0.35" stroke-width="1.2"/>
+            <!-- Tallo estilizado de caña -->
+            <path d="M13 27V11.5M13 21.5L9.5 18M13 15.5L16.5 12" stroke="#e6c7b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Arcos de radar pluvial -->
+            <path d="M19.5 23.5C22.2 21.2 23.8 17.8 23.8 14.2" stroke="#dc2b4a" stroke-width="2" stroke-linecap="round"/>
+            <path d="M23.5 26C27.2 22.8 29.2 18.2 29.2 13" stroke="#dc2b4a" stroke-opacity="0.65" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="13" cy="27" r="2" fill="#dc2b4a"/>
+          </svg>
+          <span class="d-flex flex-column lh-1">
+            <span class="nz-brand-name">NexoZafra</span>
+            <span class="nz-brand-by">por CarpinchoSW</span>
+          </span>
+        </a>
+
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Abrir menú">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3 my-3 my-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#problema">El problema</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#solucion">La solución</a>
+            </li>
+            <li class="nav-item ms-lg-2">
+              <button id="nav-sim-rain" type="button" class="btn btn-sm btn-nz-nav">
+                <i class="bi bi-cloud-rain-heavy me-1" aria-hidden="true"></i> Simular lluvia
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- =========================================================
+         SECCIÓN 1: HERO + MOCKUP INTERACTIVO + TIRA DE 4 CIFRAS
+         ========================================================= -->
+    <section id="inicio" class="nz-hero position-relative overflow-hidden">
+      <!-- Trama topográfica SVG sutil -->
+      <svg class="nz-topo-bg" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M-80 180C180 120 320 260 580 210C840 160 1010 40 1520 140" stroke="#e6c7b5" stroke-width="1"/>
+        <path d="M-80 260C220 210 380 340 650 280C920 220 1080 120 1520 230" stroke="#e6c7b5" stroke-width="1"/>
+        <path d="M-80 350C260 310 420 420 710 350C1000 280 1160 220 1520 330" stroke="#dc2b4a" stroke-width="1"/>
+        <path d="M-80 450C240 420 490 510 790 430C1090 350 1240 310 1520 430" stroke="#e6c7b5" stroke-width="1"/>
+        <path d="M-80 560C280 540 520 620 840 520C1160 420 1300 410 1520 540" stroke="#e6c7b5" stroke-width="1"/>
+      </svg>
+
+      <div class="container position-relative z-1">
+        <div class="row align-items-center g-4 g-xl-5 nz-hero-grid">
+          <!-- Columna izquierda: Titular, subtítulo y CTAs -->
+          <div class="col-lg-6">
+            <div class="nz-eyebrow-pill mb-3">
+              <i class="bi bi-geo-alt-fill me-2" aria-hidden="true"></i>
+              Caso real · Ingenio La Esperanza, Jujuy
+            </div>
+
+            <h1 class="nz-hero-title mb-3">
+              Qué lote cosechar primero, <span class="text-champagne">antes de que llueva.</span>
+            </h1>
+
+            <p class="nz-hero-subtitle mb-4">
+              Sistema de priorización de cosecha, alertas tempranas de lluvia y control en vivo del patio de caña para evitar paradas de fábrica.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3">
+              <button id="btn-hero-rain" type="button" class="btn btn-nz-primary btn-lg">
+                <i class="bi bi-cloud-rain-heavy-fill me-2" aria-hidden="true"></i>
+                Probar simulación de lluvia
+              </button>
+              <a href="#solucion" class="btn btn-nz-outline btn-lg">
+                Ver cómo funciona
+                <i class="bi bi-arrow-down-short ms-1" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Columna derecha: Panel Mockup Interactivo -->
+          <div class="col-lg-6">
+            <div id="hero-mockup" class="nz-mockup-card">
+              <!-- Barra superior del mockup -->
+              <div class="nz-mockup-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <span id="mockup-status-pill" class="nz-status-pill status-ok">
+                    <i class="bi bi-sun-fill" aria-hidden="true"></i>
+                    <span id="mockup-status-text">Escenario seco</span>
+                  </span>
+                </div>
+
+                <div class="btn-group nz-toggle-group" role="group" aria-label="Cambiar escenario climático del tablero">
+                  <button id="btn-mode-dry" type="button" class="btn btn-sm active" aria-pressed="true">
+                    <i class="bi bi-brightness-high me-1" aria-hidden="true"></i> Día seco
+                  </button>
+                  <button id="btn-mode-rain" type="button" class="btn btn-sm" aria-pressed="false">
+                    <i class="bi bi-cloud-rain-heavy me-1" aria-hidden="true"></i> Simular lluvia
+                  </button>
+                </div>
+              </div>
+
+              <!-- Banner de alerta temprana (visible al activar lluvia) -->
+              <div id="mockup-rain-banner" class="nz-rain-banner d-none" role="status" aria-live="polite">
+                <div class="d-flex align-items-start gap-2">
+                  <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1" aria-hidden="true"></i>
+                  <div>
+                    <strong>Alerta temprana a Fábrica: pronóstico ≥ 70 % de lluvia.</strong>
+                    <span class="d-block small opacity-90">Se priorizan lotes maduros con drenaje lento antes de que pierdan piso y se alista reserva bien drenada.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloque A: Top 3 Ranking sugerido -->
+              <div class="nz-mockup-section">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="nz-mockup-label">
+                    <i class="bi bi-list-ol me-1" aria-hidden="true"></i> Top 3 lotes sugeridos para cosecha
+                  </span>
+                  <span class="nz-mockup-meta">Orden según riesgo y madurez</span>
+                </div>
+
+                <div id="ranking-list" class="d-flex flex-column gap-2" aria-live="polite">
+                  <!-- Renderizado dinámico por js/main.js -->
+                </div>
+              </div>
+
+              <!-- Bloque B: Reserva mínima en patio (30 carros) -->
+              <div class="nz-mockup-section pt-3 border-top border-wine-subtle">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                  <span class="nz-mockup-label">
+                    <i class="bi bi-truck me-1" aria-hidden="true"></i> Reserva mínima en patio (30 carros)
+                  </span>
+                  <span id="patio-cars-value" class="nz-mono-badge">38 carros</span>
+                </div>
+
+                <!-- Barra de progreso con umbral de 30 carros -->
+                <div class="nz-patio-track position-relative">
+                  <div id="patio-progress-bar" class="nz-patio-fill fill-ok" style="width: 76%;"></div>
+                  <div class="nz-patio-threshold" title="Reserva mínima: 30 carros">
+                    <span class="nz-threshold-label">Mín. 30</span>
+                  </div>
+                </div>
+
+                <div class="row g-2 text-center nz-patio-metrics">
+                  <div class="col-4">
+                    <div class="nz-mini-stat">
+                      <span class="nz-mini-label">Caña neta</span>
+                      <strong id="patio-tons-value" class="nz-mono-num">1.064 t</strong>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="nz-mini-stat">
+                      <span class="nz-mini-label">Molienda segura</span>
+                      <strong id="patio-hours-value" class="nz-mono-num">~3,4 h</strong>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="nz-mini-stat">
+                      <span class="nz-mini-label">Barro / impurezas</span>
+                      <strong id="patio-mud-value" class="nz-mono-num">2 %</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="patio-alert-box" class="nz-patio-alert mt-2 status-ok">
+                  <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
+                  <span>Patio cubierto por encima del mínimo operativo.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tira inferior de 4 métricas clave -->
+        <div class="nz-stats-strip mt-5">
+          <div class="row g-3 g-lg-0 text-center text-lg-start">
+            <div class="col-6 col-lg-3 nz-stat-cell">
+              <div class="nz-stat-value">219 lotes · 18.290 ha</div>
+              <div class="nz-stat-desc">Superficie total monitoreada</div>
+            </div>
+            <div class="col-6 col-lg-3 nz-stat-cell">
+              <div class="nz-stat-value">312,5 t/h</div>
+              <div class="nz-stat-desc">Ritmo continuo de molienda</div>
+            </div>
+            <div class="col-6 col-lg-3 nz-stat-cell">
+              <div class="nz-stat-value">30 carros <span class="nz-stat-sub">(~2,7 h)</span></div>
+              <div class="nz-stat-desc">Reserva mínima en patio</div>
+            </div>
+            <div class="col-6 col-lg-3 nz-stat-cell">
+              <div class="nz-stat-value">USD 1.563/h</div>
+              <div class="nz-stat-desc">Costo central por fábrica parada</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECCIÓN 2: EL PROBLEMA (3 TARJETAS DE ALTO IMPACTO)
+         ========================================================= -->
+    <section id="problema" class="nz-section nz-section-ivory">
+      <div class="container">
+        <div class="row justify-content-center text-center mb-5 reveal">
+          <div class="col-lg-8">
+            <span class="nz-section-kicker">El problema en el ingenio</span>
+            <h2 class="nz-section-title mt-2 mb-3">
+              Cuando llueve sin anticipación, el cuello de botella no está en la ruta: está dentro del lote.
+            </h2>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-4 reveal">
+            <article class="nz-problem-card h-100">
+              <div class="nz-problem-top d-flex align-items-center justify-content-between mb-3">
+                <span class="nz-problem-icon">
+                  <i class="bi bi-moisture" aria-hidden="true"></i>
+                </span>
+                <span class="nz-problem-tag">Campo</span>
+              </div>
+              <div class="nz-problem-metric">~12 días / zafra</div>
+              <h3 class="nz-problem-heading mt-2">Suelo sin piso</h3>
+              <p class="nz-problem-copy mb-0">
+                Al llover sobre lotes con mal drenaje, las máquinas se hunden y el lote queda inhabilitado durante días.
+              </p>
+            </article>
+          </div>
+
+          <div class="col-md-4 reveal">
+            <article class="nz-problem-card h-100">
+              <div class="nz-problem-top d-flex align-items-center justify-content-between mb-3">
+                <span class="nz-problem-icon">
+                  <i class="bi bi-layers-half" aria-hidden="true"></i>
+                </span>
+                <span class="nz-problem-tag">Logística</span>
+              </div>
+              <div class="nz-problem-metric">2 % → 14 %</div>
+              <h3 class="nz-problem-heading mt-2">Barro en vez de caña</h3>
+              <p class="nz-problem-copy mb-0">
+                Después de la lluvia, el barro y las impurezas suben hasta el 14 % por carro y desploman la caña útil entregada.
+              </p>
+            </article>
+          </div>
+
+          <div class="col-md-4 reveal">
+            <article class="nz-problem-card h-100">
+              <div class="nz-problem-top d-flex align-items-center justify-content-between mb-3">
+                <span class="nz-problem-icon">
+                  <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                </span>
+                <span class="nz-problem-tag">Fábrica</span>
+              </div>
+              <div class="nz-problem-metric">USD 1.563 / h</div>
+              <h3 class="nz-problem-heading mt-2">Fábrica a ciegas</h3>
+              <p class="nz-problem-copy mb-0">
+                Sin aviso temprano ni una reserva mínima de 30 carros en patio (~2,7 h), la molienda se frena sin margen para programar mantenimiento.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECCIÓN 3: LA SOLUCIÓN (4 MÓDULOS EN TABS CON PREVIEWS)
+         ========================================================= -->
+    <section id="solucion" class="nz-section nz-section-tint">
+      <div class="container">
+        <div class="row justify-content-center text-center mb-4 reveal">
+          <div class="col-lg-8">
+            <span class="nz-section-kicker">Cómo lo resuelve NexoZafra</span>
+            <h2 class="nz-section-title mt-2 mb-2">
+              Cuatro módulos conectados del campo a la fábrica
+            </h2>
+            <p class="nz-section-lead mb-0">
+              Explorá cada módulo para ver cómo transforma clima, suelos y patio en decisiones claras.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tabs Bootstrap -->
+        <ul class="nav nav-pills justify-content-center nz-tabs mb-4 reveal" id="solutionTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="tab-ranking-btn" data-bs-toggle="pill" data-bs-target="#pane-ranking" type="button" role="tab" aria-controls="pane-ranking" aria-selected="true">
+              <i class="bi bi-sort-numeric-down me-2" aria-hidden="true"></i>Riesgo &amp; Ranking
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-mapa-btn" data-bs-toggle="pill" data-bs-target="#pane-mapa" type="button" role="tab" aria-controls="pane-mapa" aria-selected="false">
+              <i class="bi bi-map me-2" aria-hidden="true"></i>Mapa &amp; Reserva
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-patio-btn" data-bs-toggle="pill" data-bs-target="#pane-patio" type="button" role="tab" aria-controls="pane-patio" aria-selected="false">
+              <i class="bi bi-bell me-2" aria-hidden="true"></i>Patio &amp; Alertas
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-simulador-btn" data-bs-toggle="pill" data-bs-target="#pane-simulador" type="button" role="tab" aria-controls="pane-simulador" aria-selected="false">
+              <i class="bi bi-sliders me-2" aria-hidden="true"></i>Simulador &amp; Gerencia
+            </button>
+          </li>
+        </ul>
+
+        <!-- Contenido de los 4 Tabs -->
+        <div class="tab-content nz-tab-stage reveal" id="solutionTabsContent">
+
+          <!-- TAB 1: Riesgo & Ranking -->
+          <div class="tab-pane fade show active" id="pane-ranking" role="tabpanel" aria-labelledby="tab-ranking-btn" tabindex="0">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-5">
+                <span class="nz-module-badge">Priorización explicable</span>
+                <h3 class="nz-module-title mt-2 mb-3">Riesgo &amp; Ranking de cosecha</h3>
+                <p class="nz-module-copy">
+                  Cruza el pronóstico horario por zona, la lectura de 16 pluviómetros de campo, el tipo de drenaje de cada suelo y la madurez de la caña (°Bx) para ordenar qué lote conviene cosechar hoy.
+                </p>
+                <ul class="nz-module-list">
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Clasifica cada lote en riesgo Alto, Medio o Bajo con motivo legible.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Estima cuántos días quedaría sin piso según el historial del propio lote.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Adelanta los lotes maduros mal drenados antes de la lluvia.</li>
+                </ul>
+              </div>
+
+              <div class="col-lg-7">
+                <div class="nz-preview-shell">
+                  <div class="nz-preview-head d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-semibold"><i class="bi bi-clipboard2-data me-2" aria-hidden="true"></i>Ficha de priorización explicable</span>
+                    <span class="nz-preview-pill">Actualización horaria</span>
+                  </div>
+
+                  <div class="nz-score-card mb-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                      <div>
+                        <span class="nz-lot-code">LOTE A-14</span>
+                        <span class="ms-2 text-muted small">Suelo drenaje lento · Cosecha prioritaria</span>
+                      </div>
+                      <span class="nz-pill-badge badge-critical">
+                        <i class="bi bi-exclamation-octagon-fill" aria-hidden="true"></i> Riesgo Alto
+                      </span>
+                    </div>
+                    <p class="small mb-2 text-muted">
+                      <strong>Motivo:</strong> Pronóstico de lluvia ≥ 70 %, suelo de drenaje lento y caña lista para moler. Si llueve hoy, podría quedar sin piso varios días.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                      <span class="nz-chip"><i class="bi bi-droplet-half me-1" aria-hidden="true"></i> Lluvia 3 días: 24 mm</span>
+                      <span class="nz-chip"><i class="bi bi-award me-1" aria-hidden="true"></i> Madurez: 19,2 °Bx</span>
+                      <span class="nz-chip chip-action"><i class="bi bi-fast-forward-fill me-1" aria-hidden="true"></i> Sugerencia: Adelantar corte</span>
+                    </div>
+                  </div>
+
+                  <div class="nz-score-card nz-score-secondary">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                      <div>
+                        <span class="nz-lot-code">LOTE B-09</span>
+                        <span class="ms-2 text-muted small">Suelo bien drenado · 18,4 °Bx</span>
+                      </div>
+                      <span class="nz-pill-badge badge-ok">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i> Riesgo Bajo · Reserva
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Mapa & Reserva -->
+          <div class="tab-pane fade" id="pane-mapa" role="tabpanel" aria-labelledby="tab-mapa-btn" tabindex="0">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-5">
+                <span class="nz-module-badge">219 lotes georreferenciados</span>
+                <h3 class="nz-module-title mt-2 mb-3">Mapa interactivo &amp; Escudo de reserva</h3>
+                <p class="nz-module-copy">
+                  Visualiza las 18.290 ha de lotes en un mapa unificado y mantiene identificada una reserva de lotes maduros y bien drenados para mover rápido las cosechadoras si llega la lluvia.
+                </p>
+                <ul class="nz-module-list">
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Colorea los polígonos por nivel de riesgo, estado de piso o reserva.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Si un lote en reserva se cosecha o pierde piso, se depura automáticamente.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Permite inspeccionar la ficha completa de cualquier lote en un toque.</li>
+                </ul>
+              </div>
+
+              <div class="col-lg-7">
+                <div class="nz-preview-shell">
+                  <div class="nz-preview-head d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <span class="fw-semibold"><i class="bi bi-geo-alt me-2" aria-hidden="true"></i>Vista de polígonos (219 lotes)</span>
+                    <div class="btn-group nz-map-filter" role="group" aria-label="Filtro del mapa de lotes">
+                      <button id="btn-map-risk" type="button" class="btn btn-sm active" aria-pressed="true">Ver por riesgo</button>
+                      <button id="btn-map-reserve" type="button" class="btn btn-sm" aria-pressed="false">Resaltar reserva</button>
+                    </div>
+                  </div>
+
+                  <!-- Mapa SVG interactivo de lotes -->
+                  <div class="nz-map-frame">
+                    <svg id="lot-map-svg" class="w-100" viewBox="0 0 560 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa esquemático interactivo de lotes del ingenio">
+                      <rect width="560" height="270" rx="10" fill="#240911"/>
+                      <!-- Caminos / canales sutiles -->
+                      <path d="M10 140 C150 120 340 165 550 130" stroke="#e6c7b5" stroke-opacity="0.22" stroke-width="2" stroke-dasharray="5 5" fill="none"/>
+                      <path d="M250 10 L290 260" stroke="#e6c7b5" stroke-opacity="0.18" stroke-width="1.5" fill="none"/>
+
+                      <!-- Polígonos de lotes interactivos -->
+                      <polygon class="map-lot" data-lot="Lote A-14" data-risk="high" data-reserve="false" data-info="Drenaje lento · Riesgo Alto si llueve · Adelantar corte" points="35,35 145,25 160,95 45,110"/>
+                      <polygon class="map-lot" data-lot="Lote A-21" data-risk="medium" data-reserve="false" data-info="Drenaje medio · Riesgo Medio · Madurez 18,6 °Bx" points="162,25 255,38 248,108 175,98"/>
+                      <polygon class="map-lot" data-lot="Lote B-04" data-risk="low" data-reserve="true" data-info="Bien drenado · Lote de Reserva listo para operar tras lluvia" points="278,30 395,22 410,98 288,105"/>
+                      <polygon class="map-lot" data-lot="Lote B-09" data-risk="low" data-reserve="true" data-info="Bien drenado · Lote de Reserva · Madurez 18,4 °Bx" points="415,28 525,40 512,115 424,102"/>
+                      <polygon class="map-lot" data-lot="Lote C-08" data-risk="high" data-reserve="false" data-info="Drenaje lento · Riesgo Alto · Prioridad inmediata" points="38,132 152,122 168,215 48,225"/>
+                      <polygon class="map-lot" data-lot="Lote C-15" data-risk="medium" data-reserve="false" data-info="Drenaje medio · Riesgo Medio · En seguimiento" points="172,125 262,135 274,230 182,218"/>
+                      <polygon class="map-lot" data-lot="Lote D-02" data-risk="low" data-reserve="true" data-info="Bien drenado · Escudo de Reserva cercano a planta" points="290,130 408,125 422,220 298,232"/>
+                      <polygon class="map-lot" data-lot="Lote D-11" data-risk="low" data-reserve="false" data-info="Bien drenado · Habilitado · Madurez 17,9 °Bx" points="424,128 528,138 518,228 434,222"/>
+
+                      <!-- Etiquetas sutiles -->
+                      <text x="72" y="72" class="map-label">A-14</text>
+                      <text x="195" y="70" class="map-label">A-21</text>
+                      <text x="328" y="68" class="map-label">B-04</text>
+                      <text x="456" y="74" class="map-label">B-09</text>
+                      <text x="84" y="178" class="map-label">C-08</text>
+                      <text x="206" y="182" class="map-label">C-15</text>
+                      <text x="342" y="182" class="map-label">D-02</text>
+                      <text x="462" y="184" class="map-label">D-11</text>
+                    </svg>
+                  </div>
+
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+                    <span id="map-legend-text" class="small text-muted">
+                      <i class="bi bi-circle-fill text-danger me-1" aria-hidden="true"></i> Riesgo Alto
+                      <i class="bi bi-circle-fill text-warning ms-2 me-1" aria-hidden="true"></i> Medio
+                      <i class="bi bi-circle-fill text-success ms-2 me-1" aria-hidden="true"></i> Bajo / Reserva
+                    </span>
+                    <span id="map-selected-info" class="small fw-semibold text-burgundy">Tocá un lote para ver su estado</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Patio & Alertas -->
+          <div class="tab-pane fade" id="pane-patio" role="tabpanel" aria-labelledby="tab-patio-btn" tabindex="0">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-5">
+                <span class="nz-module-badge">312,5 t/h monitoreadas en vivo</span>
+                <h3 class="nz-module-title mt-2 mb-3">Abastecimiento de patio &amp; Alertas a Fábrica</h3>
+                <p class="nz-module-copy">
+                  Sigue en tiempo real la reserva mínima de 30 carros en patio (~2,7 h de molienda), ajustando automáticamente el peso útil si hubo barro tras la lluvia, y avisa con tiempo antes de que falte caña.
+                </p>
+                <ul class="nz-module-list">
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Dispara alerta si el pronóstico supera el 70 % de lluvia en cosecha activa.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Dispara alerta si la reserva en patio baja de 30 carros.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Permite a Fábrica programar mantenimientos preventivos en lugar de parar de golpe.</li>
+                </ul>
+              </div>
+
+              <div class="col-lg-7">
+                <div class="nz-preview-shell">
+                  <div class="nz-preview-head d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-semibold"><i class="bi bi-broadcast me-2" aria-hidden="true"></i>Disparadores automáticos de alerta</span>
+                    <span class="nz-preview-pill">Tiempo real</span>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="nz-alert-preview h-100">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                          <span class="nz-pill-badge badge-rain">
+                            <i class="bi bi-cloud-rain-heavy-fill" aria-hidden="true"></i> Disparador 1
+                          </span>
+                        </div>
+                        <h4 class="h6 fw-bold mb-1">Pronóstico de lluvia ≥ 70 %</h4>
+                        <p class="small text-muted mb-2">
+                          Informa qué lotes en cosecha están en riesgo, qué reserva bien drenada está lista y qué lotes conviene adelantar.
+                        </p>
+                        <div class="nz-mini-callout">
+                          <i class="bi bi-clock-history me-1" aria-hidden="true"></i> Margen anticipado para campo y planta
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="nz-alert-preview h-100">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                          <span class="nz-pill-badge badge-critical">
+                            <i class="bi bi-truck-front-fill" aria-hidden="true"></i> Disparador 2
+                          </span>
+                        </div>
+                        <h4 class="h6 fw-bold mb-1">Patio por debajo de 30 carros</h4>
+                        <p class="small text-muted mb-2">
+                          Calcula las toneladas netas reales descontando barro post-lluvia y avisa cuántas horas de molienda quedan cubiertas.
+                        </p>
+                        <div class="nz-mini-callout">
+                          <i class="bi bi-wrench-adjustable me-1" aria-hidden="true"></i> Habilita mantenimiento preventivo planificado
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Simulador & Gerencia -->
+          <div class="tab-pane fade" id="pane-simulador" role="tabpanel" aria-labelledby="tab-simulador-btn" tabindex="0">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-5">
+                <span class="nz-module-badge">Decisiones antes de la reunión matutina</span>
+                <h3 class="nz-module-title mt-2 mb-3">Simulador "¿Qué pasa si...?" &amp; Gerencia</h3>
+                <p class="nz-module-copy">
+                  Permite ensayar lluvias en campo o pedidos urgentes de azúcar orgánica sin alterar los datos reales, mientras mide paradas evitadas, costo en USD e historial exportable en PDF y Excel.
+                </p>
+                <ul class="nz-module-list">
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Simula milímetros de lluvia y muestra qué lotes quedan sin piso.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Calcula cuánta reserva bien drenada sobrevive para sostener la molienda.</li>
+                  <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Traduce cada parada en costo real (USD 1.563/h) y genera reportes listos para exportar.</li>
+                </ul>
+              </div>
+
+              <div class="col-lg-7">
+                <div class="nz-preview-shell">
+                  <div class="nz-preview-head d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-semibold"><i class="bi bi-sliders2 me-2" aria-hidden="true"></i>Mini-simulador interactivo de escenario</span>
+                    <span class="nz-preview-pill">Sin tocar datos reales</span>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <label for="sim-rain-slider" class="form-label fw-semibold mb-0">Lluvia simulada en campo</label>
+                      <span id="sim-rain-mm" class="nz-mono-badge bg-burgundy text-white">25 mm</span>
+                    </div>
+                    <input type="range" class="form-range nz-range" id="sim-rain-slider" min="0" max="60" step="5" value="25">
+                    <div class="d-flex justify-content-between small text-muted">
+                      <span>0 mm (seco)</span>
+                      <span>30 mm (fuerte)</span>
+                      <span>60 mm (temporal)</span>
+                    </div>
+                  </div>
+
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input nz-switch" type="checkbox" role="switch" id="sim-organic-switch">
+                    <label class="form-check-label fw-medium" for="sim-organic-switch">
+                      Priorizar pedido urgente de azúcar orgánica
+                    </label>
+                  </div>
+
+                  <div class="row g-2 mb-2">
+                    <div class="col-sm-4">
+                      <div class="nz-sim-result">
+                        <span class="nz-sim-label">Lotes sin piso</span>
+                        <strong id="sim-affected-lots" class="nz-sim-value">34 lotes</strong>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="nz-sim-result">
+                        <span class="nz-sim-label">Reserva útil</span>
+                        <strong id="sim-reserve-ha" class="nz-sim-value">2.840 ha</strong>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="nz-sim-result">
+                        <span class="nz-sim-label">Parada en riesgo</span>
+                        <strong id="sim-cost-prevented" class="nz-sim-value">USD 9.378</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p id="sim-scenario-note" class="small text-muted mb-0">
+                    Con 25 mm proyectados, conviene mover cosechadoras hacia lotes bien drenados antes del frente de lluvia.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2 micro-badges sobrios al pie de los módulos -->
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-4 reveal">
+          <span class="nz-micro-badge">
+            <i class="bi bi-wifi-off me-2" aria-hidden="true"></i>Carga offline en campo (sin señal)
+          </span>
+          <span class="nz-micro-badge">
+            <i class="bi bi-tv me-2" aria-hidden="true"></i>Modo TV para sala de control
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SECCIÓN 4: CIERRE / CTA DE EXPO
+         ========================================================= -->
+    <section id="cierre" class="nz-closing position-relative overflow-hidden">
+      <div class="container position-relative z-1">
+        <div class="nz-closing-card text-center mx-auto reveal">
+          <span class="nz-eyebrow-pill mb-3">
+            <i class="bi bi-stars me-2" aria-hidden="true"></i>Presentado por CarpinchoSW
+          </span>
+          <h2 class="nz-closing-title mb-3">
+            Menos paradas imprevistas. Más molienda continua.
+          </h2>
+          <p class="nz-closing-subtitle mx-auto mb-4">
+            NexoZafra conecta clima, suelos y patio para anticipar cada decisión antes de que llueva.
+          </p>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <button id="btn-cierre-rain" type="button" class="btn btn-nz-primary btn-lg">
+              <i class="bi bi-cloud-rain-heavy-fill me-2" aria-hidden="true"></i>
+              Probar simulación de lluvia
+            </button>
+            <button id="btn-replay-intro" type="button" class="btn btn-nz-outline btn-lg">
+              <i class="bi bi-arrow-counterclockwise me-2" aria-hidden="true"></i>
+              Repetir presentación
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       FOOTER SOBRIO
+       ========================================================= -->
+  <footer class="nz-footer">
+    <div class="container">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 py-4">
+        <span class="small">NexoZafra · Caso Ingenio La Esperanza (Jujuy)</span>
+        <span class="small text-champagne">Presentado por CarpinchoSW</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5.3.3 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- App Logic -->
+  <script src="js/main.js"></script>
+</body>
+</html>

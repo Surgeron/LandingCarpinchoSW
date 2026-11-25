@@ -1,0 +1,1221 @@
+/* =========================================================
+   NexoZafra · Sistema de Diseño Premium Rojo & Bordó
+   ========================================================= */
+:root {
+  /* Fondos oscuros (Intro, Navbar scrolled, Hero, Cierre, Footer) */
+  --bg-wine-deep: #14060a;
+  --bg-burgundy: #240911;
+  --bg-burgundy-elevated: #360d19;
+  --bg-bordo: #561325;
+
+  /* Acentos rojo / carmesí / champagne */
+  --accent-crimson: #b81d38;
+  --accent-crimson-bright: #dc2b4a;
+  --accent-champagne: #e6c7b5;
+  --accent-blush: #f7e8eb;
+
+  /* Fondos claros editoriales */
+  --bg-ivory: #faf7f5;
+  --bg-tint: #f3ecee;
+  --bg-card: #ffffff;
+  --ink-primary: #1f0a10;
+  --ink-muted: #61434b;
+  --border-subtle: rgba(86, 19, 37, 0.12);
+
+  /* Estados semánticos */
+  --state-ok: #178052;
+  --state-warn: #c98212;
+  --state-critical: #d62839;
+  --state-rain: #2b6cb0;
+
+  /* Tipografías */
+  --font-display: 'Barlow Condensed', 'Bahnschrift', 'DIN Alternate', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Sobrescritura de tokens Bootstrap (cero azul por defecto) */
+  --bs-primary: #b81d38;
+  --bs-primary-rgb: 184, 29, 56;
+  --bs-link-color: #b81d38;
+  --bs-link-hover-color: #8f142a;
+  --bs-focus-ring-color: rgba(220, 43, 74, 0.28);
+  --bs-body-font-family: var(--font-sans);
+  --bs-body-color: var(--ink-primary);
+  --bs-body-bg: var(--bg-ivory);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink-primary);
+  background-color: var(--bg-ivory);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body.intro-active {
+  overflow: hidden;
+}
+
+/* Utilidades tipográficas y color */
+.text-champagne {
+  color: var(--accent-champagne) !important;
+}
+
+.text-burgundy {
+  color: var(--bg-bordo) !important;
+}
+
+.bg-burgundy {
+  background-color: var(--bg-bordo) !important;
+}
+
+.border-wine-subtle {
+  border-color: rgba(230, 199, 181, 0.16) !important;
+}
+
+.nz-mono-num,
+.nz-mono-badge,
+.nz-stat-value,
+.nz-problem-metric,
+.nz-sim-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   1. INTRO SPLASH: "CarpinchoSW presenta: NexoZafra"
+   ========================================================= */
+.intro-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 42%, #3a0d1b 0%, var(--bg-wine-deep) 68%);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.72s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.55s ease;
+}
+
+.intro-splash.is-leaving {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-splash.is-hidden {
+  display: none;
+}
+
+.intro-glow {
+  position: absolute;
+  width: min(62vw, 540px);
+  height: min(62vw, 540px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220, 43, 74, 0.22) 0%, rgba(86, 19, 37, 0) 70%);
+  filter: blur(22px);
+  pointer-events: none;
+}
+
+.intro-skip-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 2;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent-champagne);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(230, 199, 181, 0.25);
+  border-radius: 999px;
+  padding: 0.42rem 0.95rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.intro-skip-btn:hover,
+.intro-skip-btn:focus-visible {
+  color: #fff;
+  background: rgba(184, 29, 56, 0.45);
+  border-color: var(--accent-champagne);
+}
+
+.intro-stage {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+
+.intro-kicker {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent-champagne);
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.intro-divider {
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-crimson-bright), var(--accent-champagne), transparent);
+  opacity: 0;
+}
+
+.intro-wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(3.3rem, 9vw, 6.2rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  color: #ffffff;
+  text-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+}
+
+.intro-subtitle {
+  font-size: clamp(0.95rem, 1.8vw, 1.12rem);
+  color: rgba(255, 244, 246, 0.78);
+  letter-spacing: 0.03em;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.intro-splash.is-playing .intro-kicker {
+  animation: introFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+
+.intro-splash.is-playing .intro-divider {
+  animation: introExpandLine 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.45s forwards;
+}
+
+.intro-splash.is-playing .intro-wordmark {
+  animation: introWordmarkIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.68s forwards;
+}
+
+.intro-splash.is-playing .intro-subtitle {
+  animation: introFadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.08s forwards;
+}
+
+@keyframes introFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes introExpandLine {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 180px;
+    opacity: 1;
+  }
+}
+
+@keyframes introWordmarkIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   2. NAVBAR FIJA
+   ========================================================= */
+.nz-navbar {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  transition: background-color 0.28s ease, padding 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.nz-navbar.navbar-scrolled {
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+  background-color: rgba(20, 6, 10, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: rgba(230, 199, 181, 0.14);
+  box-shadow: 0 12px 30px rgba(10, 2, 5, 0.35);
+}
+
+.nz-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+
+.nz-brand-by {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--accent-champagne);
+  opacity: 0.85;
+}
+
+.nz-navbar .nav-link {
+  font-size: 0.94rem;
+  font-weight: 500;
+  color: rgba(255, 245, 246, 0.84);
+  transition: color 0.2s ease;
+}
+
+.nz-navbar .nav-link:hover,
+.nz-navbar .nav-link:focus-visible {
+  color: var(--accent-champagne);
+}
+
+.btn-nz-nav {
+  color: #fff;
+  background-color: var(--accent-crimson);
+  border: 1px solid rgba(230, 199, 181, 0.28);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.18s ease;
+}
+
+.btn-nz-nav:hover,
+.btn-nz-nav:focus-visible {
+  color: #fff;
+  background-color: var(--accent-crimson-bright);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   3. BOTONES Y COMPONENTES BASE
+   ========================================================= */
+.btn-nz-primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent-crimson) 0%, #9b142c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 0.82rem 1.45rem;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 12px 28px rgba(184, 29, 56, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn-nz-primary:hover,
+.btn-nz-primary:focus-visible {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent-crimson-bright) 0%, var(--accent-crimson) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(220, 43, 74, 0.42);
+}
+
+.btn-nz-outline {
+  color: var(--accent-champagne);
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(230, 199, 181, 0.35);
+  border-radius: 12px;
+  padding: 0.82rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-nz-outline:hover,
+.btn-nz-outline:focus-visible {
+  color: #ffffff;
+  background-color: rgba(230, 199, 181, 0.12);
+  border-color: var(--accent-champagne);
+}
+
+.btn:focus-visible,
+.form-control:focus,
+.form-range:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem var(--bs-focus-ring-color);
+}
+
+/* =========================================================
+   4. SECCIÓN 1: HERO + MOCKUP INTERACTIVO + TIRA DE 4 CIFRAS
+   ========================================================= */
+.nz-hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 80% 20%, rgba(184, 29, 56, 0.24) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 55% at 15% 85%, rgba(86, 19, 37, 0.55) 0%, transparent 70%),
+    linear-gradient(165deg, var(--bg-wine-deep) 0%, var(--bg-burgundy) 55%, #1a060d 100%);
+  color: #ffffff;
+  padding-top: 7.4rem;
+  padding-bottom: 3.75rem;
+}
+
+.nz-topo-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+.nz-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.38rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent-champagne);
+  background: rgba(86, 19, 37, 0.65);
+  border: 1px solid rgba(230, 199, 181, 0.28);
+  border-radius: 999px;
+}
+
+.nz-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.85rem, 5.6vw, 4.55rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+}
+
+.nz-hero-subtitle {
+  font-size: clamp(1.04rem, 1.4vw, 1.18rem);
+  line-height: 1.62;
+  color: rgba(255, 243, 245, 0.82);
+  max-width: 34rem;
+}
+
+/* Mockup Interactivo del Hero */
+.nz-mockup-card {
+  background: linear-gradient(180deg, rgba(54, 13, 25, 0.94) 0%, rgba(30, 8, 14, 0.97) 100%);
+  border: 1px solid rgba(230, 199, 181, 0.22);
+  border-radius: 20px;
+  padding: 1.35rem;
+  box-shadow:
+    0 24px 55px rgba(8, 2, 4, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nz-mockup-card.is-rain {
+  border-color: rgba(220, 43, 74, 0.65);
+  box-shadow:
+    0 26px 60px rgba(184, 29, 56, 0.26),
+    inset 0 1px 0 rgba(230, 199, 181, 0.14);
+}
+
+.nz-mockup-card.pulse-highlight {
+  animation: mockupPulse 0.85s ease;
+}
+
+@keyframes mockupPulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.015); box-shadow: 0 0 0 6px rgba(220, 43, 74, 0.28), 0 26px 60px rgba(184, 29, 56, 0.35); }
+  100% { transform: scale(1); }
+}
+
+.nz-mockup-header {
+  padding-bottom: 0.95rem;
+  margin-bottom: 0.95rem;
+  border-bottom: 1px solid rgba(230, 199, 181, 0.15);
+}
+
+.nz-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.78rem;
+  border-radius: 999px;
+}
+
+.nz-status-pill.status-ok {
+  color: #a9f0cb;
+  background-color: rgba(23, 128, 82, 0.24);
+  border: 1px solid rgba(23, 128, 82, 0.55);
+}
+
+.nz-status-pill.status-rain {
+  color: #ffd0d5;
+  background-color: rgba(214, 40, 57, 0.28);
+  border: 1px solid rgba(220, 43, 74, 0.68);
+}
+
+.nz-toggle-group .btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 245, 246, 0.78);
+  background: rgba(20, 6, 10, 0.6);
+  border: 1px solid rgba(230, 199, 181, 0.22);
+  padding: 0.35rem 0.75rem;
+}
+
+.nz-toggle-group .btn.active {
+  color: #ffffff;
+  background-color: var(--accent-crimson);
+  border-color: var(--accent-crimson-bright);
+}
+
+.nz-rain-banner {
+  background: linear-gradient(135deg, rgba(43, 108, 176, 0.26) 0%, rgba(184, 29, 56, 0.28) 100%);
+  border: 1px solid rgba(230, 199, 181, 0.32);
+  border-radius: 12px;
+  padding: 0.72rem 0.9rem;
+  margin-bottom: 0.95rem;
+  color: #fff6f7;
+  font-size: 0.84rem;
+}
+
+.nz-mockup-section {
+  margin-bottom: 0.9rem;
+}
+
+.nz-mockup-section:last-child {
+  margin-bottom: 0;
+}
+
+.nz-mockup-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-champagne);
+}
+
+.nz-mockup-meta {
+  font-size: 0.74rem;
+  color: rgba(255, 245, 246, 0.62);
+}
+
+.nz-ranking-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(20, 6, 10, 0.56);
+  border: 1px solid rgba(230, 199, 181, 0.13);
+  border-radius: 12px;
+  padding: 0.65rem 0.82rem;
+  transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.nz-ranking-row.is-urgent {
+  background: rgba(184, 29, 56, 0.16);
+  border-color: rgba(220, 43, 74, 0.55);
+}
+
+.nz-rank-pos {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: rgba(230, 199, 181, 0.14);
+  color: var(--accent-champagne);
+  flex-shrink: 0;
+}
+
+.nz-ranking-row.is-urgent .nz-rank-pos {
+  background: var(--accent-crimson);
+  color: #fff;
+}
+
+.nz-rank-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #ffffff;
+}
+
+.nz-rank-sub {
+  font-size: 0.76rem;
+  color: rgba(255, 245, 246, 0.7);
+}
+
+.nz-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.62rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.nz-pill-badge.badge-ok {
+  color: #0e5938;
+  background-color: #dff5ea;
+  border: 1px solid rgba(23, 128, 82, 0.28);
+}
+
+.nz-pill-badge.badge-warn {
+  color: #825204;
+  background-color: #fef3dc;
+  border: 1px solid rgba(201, 130, 18, 0.35);
+}
+
+.nz-pill-badge.badge-critical {
+  color: #9e1524;
+  background-color: #fde3e6;
+  border: 1px solid rgba(214, 40, 57, 0.35);
+}
+
+.nz-pill-badge.badge-rain {
+  color: #194b82;
+  background-color: #e4effb;
+  border: 1px solid rgba(43, 108, 176, 0.32);
+}
+
+/* Variantes sobre fondo oscuro del mockup */
+.nz-mockup-card .nz-pill-badge.badge-ok {
+  color: #a9f0cb;
+  background: rgba(23, 128, 82, 0.24);
+  border-color: rgba(23, 128, 82, 0.55);
+}
+
+.nz-mockup-card .nz-pill-badge.badge-warn {
+  color: #ffe09e;
+  background: rgba(201, 130, 18, 0.24);
+  border-color: rgba(201, 130, 18, 0.55);
+}
+
+.nz-mockup-card .nz-pill-badge.badge-critical {
+  color: #ffc7cd;
+  background: rgba(214, 40, 57, 0.3);
+  border-color: rgba(220, 43, 74, 0.65);
+}
+
+.nz-mono-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.22rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(230, 199, 181, 0.14);
+  color: var(--accent-champagne);
+}
+
+/* Barra de patio con umbral de 30 carros (30/50 = 60%) */
+.nz-patio-track {
+  height: 14px;
+  margin-top: 1.85rem;
+  margin-bottom: 0.95rem;
+  border-radius: 999px;
+  background: rgba(20, 6, 10, 0.72);
+  border: 1px solid rgba(230, 199, 181, 0.16);
+  overflow: visible;
+}
+
+.nz-patio-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.35s ease;
+}
+
+.nz-patio-fill.fill-ok {
+  background: linear-gradient(90deg, #178052 0%, #27a86f 100%);
+}
+
+.nz-patio-fill.fill-critical {
+  background: linear-gradient(90deg, var(--accent-crimson) 0%, #f04b5e 100%);
+}
+
+.nz-patio-threshold {
+  position: absolute;
+  left: 60%;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background-color: var(--accent-champagne);
+  box-shadow: 0 0 8px rgba(230, 199, 181, 0.55);
+}
+
+.nz-threshold-label {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  top: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.16rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(20, 6, 10, 0.88);
+  border: 1px solid rgba(230, 199, 181, 0.25);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--accent-champagne);
+  white-space: nowrap;
+}
+
+.nz-mini-stat {
+  background: rgba(20, 6, 10, 0.5);
+  border: 1px solid rgba(230, 199, 181, 0.12);
+  border-radius: 10px;
+  padding: 0.45rem 0.35rem;
+}
+
+.nz-mini-label {
+  display: block;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  margin-bottom: 0.15rem;
+  color: rgba(255, 245, 246, 0.66);
+}
+
+.nz-mini-stat .nz-mono-num {
+  font-size: 0.92rem;
+  color: #ffffff;
+}
+
+.nz-patio-alert {
+  display: flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.48rem 0.72rem;
+}
+
+.nz-patio-alert.status-ok {
+  color: #a9f0cb;
+  background: rgba(23, 128, 82, 0.18);
+  border: 1px solid rgba(23, 128, 82, 0.38);
+}
+
+.nz-patio-alert.status-critical {
+  color: #ffd0d5;
+  background: rgba(214, 40, 57, 0.24);
+  border: 1px solid rgba(220, 43, 74, 0.58);
+}
+
+/* Tira inferior de 4 métricas clave */
+.nz-stats-strip {
+  background: rgba(20, 6, 10, 0.55);
+  border: 1px solid rgba(230, 199, 181, 0.18);
+  border-radius: 16px;
+  padding: 1.2rem 1.35rem;
+  backdrop-filter: blur(8px);
+}
+
+.nz-stat-cell {
+  padding: 0.4rem 1rem;
+}
+
+@media (min-width: 992px) {
+  .nz-stat-cell:not(:last-child) {
+    border-right: 1px solid rgba(230, 199, 181, 0.16);
+  }
+}
+
+.nz-stat-value {
+  font-size: clamp(1.06rem, 1.5vw, 1.24rem);
+  font-weight: 700;
+  color: var(--accent-champagne);
+}
+
+.nz-stat-sub {
+  font-size: 0.85em;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.nz-stat-desc {
+  font-size: 0.82rem;
+  color: rgba(255, 243, 245, 0.72);
+  margin-top: 0.15rem;
+}
+
+/* =========================================================
+   5. SECCIONES EDITORIALES (PROBLEMA Y SOLUCIÓN)
+   ========================================================= */
+.nz-section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.nz-section-ivory {
+  background-color: var(--bg-ivory);
+}
+
+.nz-section-tint {
+  background-color: var(--bg-tint);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.nz-section-kicker {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-crimson);
+  background: var(--accent-blush);
+  border: 1px solid rgba(184, 29, 56, 0.18);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+}
+
+.nz-section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.15rem, 4vw, 3.1rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--ink-primary);
+}
+
+.nz-section-lead {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+}
+
+/* Tarjetas de El Problema */
+.nz-problem-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-top: 4px solid var(--bg-bordo);
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 12px 32px rgba(36, 9, 17, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-top-color 0.25s ease;
+}
+
+.nz-problem-card:hover {
+  transform: translateY(-4px);
+  border-top-color: var(--accent-crimson);
+  box-shadow: 0 20px 42px rgba(86, 19, 37, 0.11);
+}
+
+.nz-problem-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--accent-crimson);
+  background-color: var(--accent-blush);
+}
+
+.nz-problem-tag {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.nz-problem-metric {
+  font-size: clamp(1.7rem, 2.5vw, 2.05rem);
+  font-weight: 700;
+  color: var(--bg-bordo);
+  line-height: 1.15;
+}
+
+.nz-problem-heading {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.nz-problem-copy {
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+/* =========================================================
+   6. TABS Y PREVIEWS DE LA SOLUCIÓN
+   ========================================================= */
+.nz-tabs {
+  gap: 0.65rem;
+}
+
+.nz-tabs .nav-link {
+  color: var(--bg-bordo);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.62rem 1.2rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.nz-tabs .nav-link:hover {
+  border-color: var(--accent-crimson);
+  color: var(--accent-crimson);
+}
+
+.nz-tabs .nav-link.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--bg-bordo) 0%, var(--accent-crimson) 100%);
+  border-color: transparent;
+  box-shadow: 0 10px 24px rgba(184, 29, 56, 0.24);
+}
+
+.nz-tab-stage {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 22px;
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  box-shadow: 0 18px 46px rgba(36, 9, 17, 0.08);
+}
+
+.nz-module-badge {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-crimson);
+}
+
+.nz-module-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.nz-module-copy {
+  font-size: 0.98rem;
+  line-height: 1.62;
+  color: var(--ink-muted);
+}
+
+.nz-module-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.nz-module-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.93rem;
+  color: var(--ink-primary);
+  margin-bottom: 0.65rem;
+}
+
+.nz-module-list li i {
+  color: var(--accent-crimson);
+  font-size: 1.05rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.nz-preview-shell {
+  background-color: var(--bg-ivory);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.nz-preview-head {
+  font-size: 0.88rem;
+  color: var(--bg-bordo);
+}
+
+.nz-preview-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.24rem 0.65rem;
+  border-radius: 999px;
+  color: var(--bg-bordo);
+  background: var(--accent-blush);
+}
+
+/* Tab 1: Scoring */
+.nz-score-card {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--state-critical);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.nz-score-card.nz-score-secondary {
+  border-left-color: var(--state-ok);
+}
+
+.nz-lot-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--ink-primary);
+}
+
+.nz-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  background: var(--bg-tint);
+  color: var(--ink-primary);
+}
+
+.nz-chip.chip-action {
+  background: var(--accent-blush);
+  color: var(--accent-crimson);
+}
+
+/* Tab 2: Mapa SVG Interactivo */
+.nz-map-filter .btn {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--bg-bordo);
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+}
+
+.nz-map-filter .btn.active {
+  color: #fff;
+  background: var(--bg-bordo);
+  border-color: var(--bg-bordo);
+}
+
+.nz-map-frame {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(86, 19, 37, 0.22);
+}
+
+.map-lot {
+  cursor: pointer;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1.5;
+  transition: fill 0.25s ease, opacity 0.25s ease, stroke-width 0.2s ease, stroke 0.2s ease;
+}
+
+.map-lot:hover,
+.map-lot.is-selected {
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+
+.map-lot[data-risk="high"] {
+  fill: rgba(214, 40, 57, 0.85);
+}
+
+.map-lot[data-risk="medium"] {
+  fill: rgba(201, 130, 18, 0.82);
+}
+
+.map-lot[data-risk="low"] {
+  fill: rgba(23, 128, 82, 0.82);
+}
+
+/* Modo "Resaltar reserva" */
+.nz-map-frame.mode-reserve .map-lot[data-reserve="false"] {
+  fill: rgba(97, 67, 75, 0.35);
+  opacity: 0.55;
+}
+
+.nz-map-frame.mode-reserve .map-lot[data-reserve="true"] {
+  fill: rgba(23, 128, 82, 0.95);
+  stroke: var(--accent-champagne);
+  stroke-width: 2.5;
+}
+
+.map-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  fill: #ffffff;
+  pointer-events: none;
+}
+
+/* Tab 3: Alertas */
+.nz-alert-preview {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.nz-mini-callout {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--bg-bordo);
+  background: var(--bg-tint);
+  border-radius: 8px;
+  padding: 0.42rem 0.62rem;
+}
+
+/* Tab 4: Mini-simulador */
+.nz-range::-webkit-slider-thumb {
+  background: var(--accent-crimson);
+}
+
+.nz-range::-webkit-slider-thumb:active {
+  background: var(--accent-crimson-bright);
+}
+
+.nz-range::-moz-range-thumb {
+  background: var(--accent-crimson);
+}
+
+.nz-range::-moz-range-thumb:active {
+  background: var(--accent-crimson-bright);
+}
+
+.nz-switch:checked {
+  background-color: var(--accent-crimson);
+  border-color: var(--accent-crimson);
+}
+
+.nz-switch:focus {
+  border-color: rgba(184, 29, 56, 0.55);
+  box-shadow: 0 0 0 0.25rem var(--bs-focus-ring-color);
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23b81d38'/%3e%3c/svg%3e");
+}
+
+.nz-switch:checked:focus {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
+}
+
+.nz-preview-shell .text-success {
+  color: var(--state-ok) !important;
+}
+
+.nz-preview-shell .text-warning {
+  color: var(--state-warn) !important;
+}
+
+.nz-preview-shell .text-danger {
+  color: var(--state-critical) !important;
+}
+
+.nz-sim-result {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.72rem 0.85rem;
+}
+
+.nz-sim-label {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+}
+
+.nz-sim-value {
+  font-size: 1.08rem;
+  color: var(--bg-bordo);
+}
+
+/* 2 micro-badges al pie */
+.nz-micro-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--bg-bordo);
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.46rem 1rem;
+}
+
+.nz-micro-badge i {
+  color: var(--accent-crimson);
+}
+
+/* =========================================================
+   7. CIERRE Y FOOTER
+   ========================================================= */
+.nz-closing {
+  background: linear-gradient(180deg, var(--bg-burgundy) 0%, var(--bg-wine-deep) 100%);
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+  color: #ffffff;
+}
+
+.nz-closing-card {
+  max-width: 780px;
+  background: linear-gradient(155deg, rgba(86, 19, 37, 0.55) 0%, rgba(20, 6, 10, 0.85) 100%);
+  border: 1px solid rgba(230, 199, 181, 0.25);
+  border-radius: 24px;
+  padding: clamp(2rem, 4vw, 3.2rem);
+  box-shadow: 0 24px 55px rgba(8, 2, 4, 0.45);
+}
+
+.nz-closing-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 4.2vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.nz-closing-subtitle {
+  max-width: 34rem;
+  font-size: 1.04rem;
+  color: rgba(255, 243, 245, 0.8);
+}
+
+.nz-footer {
+  background-color: var(--bg-wine-deep);
+  color: rgba(255, 243, 245, 0.72);
+  border-top: 1px solid rgba(230, 199, 181, 0.14);
+}
+
+/* =========================================================
+   8. REVEAL SCROLL Y PREFERS-REDUCED-MOTION
+   ========================================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .intro-splash,
+  .intro-kicker,
+  .intro-divider,
+  .intro-wordmark,
+  .intro-subtitle,
+  .reveal,
+  .nz-patio-fill,
+  .nz-problem-card {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .intro-kicker,
+  .intro-wordmark,
+  .intro-subtitle,
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .intro-divider {
+    width: 180px !important;
+    opacity: 1 !important;
+  }
+}
