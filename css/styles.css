@@ -87,7 +87,7 @@ body.intro-active {
 }
 
 /* =========================================================
-   1. INTRO SPLASH: "CarpinchoSW presenta: NexoZafra"
+   1. INTRO SPLASH: "Carpincho SW presenta: NexoZafra"
    ========================================================= */
 .intro-splash {
   position: fixed;
@@ -1167,6 +1167,56 @@ body.intro-active {
   max-width: 34rem;
   font-size: 1.04rem;
   color: rgba(255, 243, 245, 0.8);
+}
+
+.nz-system-links-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-champagne);
+  opacity: 0.88;
+}
+
+.nz-domain-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.48rem 0.9rem;
+  border-radius: 999px;
+  background-color: rgba(20, 6, 10, 0.55);
+  border: 1px solid rgba(230, 199, 181, 0.24);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 245, 246, 0.9);
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.18s ease;
+}
+
+.nz-domain-pill:hover,
+.nz-domain-pill:focus-visible {
+  color: #ffffff;
+  background-color: rgba(184, 29, 56, 0.32);
+  border-color: var(--accent-champagne);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.nz-domain-pill i {
+  color: var(--accent-crimson-bright);
+}
+
+.nz-domain-tag {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-champagne);
+  background-color: rgba(230, 199, 181, 0.12);
+  border: 1px solid rgba(230, 199, 181, 0.25);
+  border-radius: 999px;
+  padding: 0.12rem 0.48rem;
 }
 
 .nz-footer {

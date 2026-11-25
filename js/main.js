@@ -4,7 +4,7 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* =========================================================
-     1. INTRO SPLASH ("CarpinchoSW presenta: NexoZafra")
+     1. INTRO SPLASH ("Carpincho SW presenta: NexoZafra")
      ========================================================= */
   const introEl = document.getElementById('intro-splash');
   const skipIntroBtn = document.getElementById('btn-skip-intro');
